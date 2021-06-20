@@ -473,8 +473,12 @@ MonoBehaviour:
   _boxCollider2D: {fileID: 0}
   inputX: 0
   movementSpeed: 20
-  jumpInitialSpeed: 20
+  jumpSpeed: 20
+  jumpFallSpeed: 1
+  jumpHoldTimer: 0
+  jumpsLeft: 0
   jumpPressed: 0
+  playerIsJumping: 0
   playerIsGrounded: 0
   stopThreshold: 1
   platformLayerMask:
@@ -671,8 +675,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1149846781}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.94, y: 0.77, z: 0}
-  m_LocalScale: {x: 0.35, y: 7.342838, z: 1}
+  m_LocalPosition: {x: 4.94, y: 2.4907, z: 0}
+  m_LocalScale: {x: 0.35, y: 4.9706373, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 5

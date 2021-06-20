@@ -9,11 +9,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Rigidbody2D _rigidBody;
     [SerializeField] private BoxCollider2D _boxCollider2D;
     [SerializeField] private float inputX;
-    [SerializeField] private float movementSpeed = 20f;
-    [SerializeField] private float jumpInitialSpeed = 20f;
+    [SerializeField] private float movementSpeed;
+    [SerializeField] private float jumpSpeed;
+    [SerializeField] private float jumpFallSpeed;
+    [SerializeField] private float jumpHoldTimer;
+    [SerializeField] private int jumpsLeft;
     [SerializeField] private bool jumpPressed;
+    [SerializeField] private bool playerIsJumping;
     [SerializeField] private bool playerIsGrounded;
-    [SerializeField] private float stopThreshold = 1f;
+    [SerializeField] private float stopThreshold;
     [SerializeField] private LayerMask platformLayerMask;
 
     private bool checkIfGrounded()
@@ -31,6 +35,7 @@ public class PlayerController : MonoBehaviour
         //Debug.Log(hit.collider);
 
         playerIsGrounded = hit.collider != null;
+        playerIsJumping = !playerIsGrounded;
         return playerIsGrounded;
     }
 
@@ -48,13 +53,40 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        ProcessInput();
+        ProcessRun();
+        ProcessJump();
     }
 
-    private void ProcessInput()
+    private void ProcessJump()
     {
+        const int maxJumpsLeft = 3;
+        if (playerIsGrounded) jumpsLeft = maxJumpsLeft;
+
+        if (jumpPressed && playerIsGrounded) 
+        {
+            _rigidBody.velocity = new Vector2(_rigidBody.velocity.x, jumpSpeed);
+            jumpHoldTimer = 0.15f;
+        }
+
+        
+        if (jumpPressed && playerIsJumping)
+        {
+            if (jumpHoldTimer > 0 && jumpsLeft > 0)
+            {   
+                _rigidBody.velocity = new Vector2(_rigidBody.velocity.x, jumpSpeed);
+                jumpHoldTimer -= Time.deltaTime;
+            }
+        } 
+        
+
+        if (!playerIsGrounded && _rigidBody.velocity.y <= 0f) _rigidBody.AddForce(new Vector2(0, -jumpFallSpeed), ForceMode2D.Impulse);
+    }
+
+    private void ProcessRun()
+    {
+
         if (inputX == 0f && (_rigidBody.velocity.magnitude < stopThreshold)) _rigidBody.velocity = new Vector2(0f, _rigidBody.velocity.y); //keeps decceleration from feeling too gradual
-        else _rigidBody.AddForce(new Vector2(inputX * movementSpeed * _rigidBody.drag * Time.fixedDeltaTime, 0f), ForceMode2D.Impulse); //* by drag eliminates need to fiddle with it in editor
+        else _rigidBody.AddForce(new Vector2(inputX * movementSpeed * _rigidBody.drag * Time.fixedDeltaTime, 0f), ForceMode2D.Impulse); //* by drag eliminates need to fiddle with it in editor 
     }
 
     public void OnMove(InputAction.CallbackContext context) => inputX = context.ReadValue<float>();
@@ -62,8 +94,9 @@ public class PlayerController : MonoBehaviour
     public void OnJump(InputAction.CallbackContext context)
     {
         Debug.Log(context.phase.ToString());
-        jumpPressed = context.performed;
-
-        if (jumpPressed && playerIsGrounded) _rigidBody.velocity = new Vector2(_rigidBody.velocity.x, jumpInitialSpeed);
+        if (context.performed) jumpsLeft--;
+        context.action.performed += ctx => jumpPressed = true;
+        context.action.canceled += ctx => jumpPressed = false;
+        if (context.canceled) jumpHoldTimer = 0.05f;
     }
 }
