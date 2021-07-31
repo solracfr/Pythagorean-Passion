@@ -473,6 +473,7 @@ MonoBehaviour:
   _boxCollider2D: {fileID: 0}
   inputX: 0
   movementSpeed: 20
+  dashSpeed: 20
   jumpSpeed: 20
   jumpFallSpeed: 1
   jumpHoldTimer: 0
@@ -541,6 +542,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: bd531e8f-9c3d-4a03-906f-039edeb2fe61
     m_ActionName: Movement/Jump[/Keyboard/space,/XInputControllerWindows/buttonSouth]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 989763278}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: OnDash
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: f2fca73d-6cb7-4b6f-9565-1ab92c784017
+    m_ActionName: Movement/Dash[/XInputControllerWindows/rightShoulder,/Keyboard/shift]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Movement

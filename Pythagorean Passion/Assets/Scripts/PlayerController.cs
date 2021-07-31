@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private BoxCollider2D _boxCollider2D;
     [SerializeField] private float inputX;
     [SerializeField] private float movementSpeed;
+    [SerializeField] private float dashSpeed;
     [SerializeField] private float jumpSpeed;
     [SerializeField] private float jumpFallSpeed;
     [SerializeField] private float jumpHoldTimer;
@@ -98,5 +99,12 @@ public class PlayerController : MonoBehaviour
         context.action.performed += ctx => jumpPressed = true;
         context.action.canceled += ctx => jumpPressed = false;
         if (context.canceled) jumpHoldTimer = 0.05f;
+    }
+
+    public void OnDash(InputAction.CallbackContext context)
+    {
+        Debug.Log("Dash Performed");
+        if (context.performed) movementSpeed += dashSpeed;
+        if (context.canceled) movementSpeed -= dashSpeed;
     }
 }
